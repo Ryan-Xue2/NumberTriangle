@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -91,7 +92,7 @@ public class NumberTriangle {
         if (path.isEmpty()) {
             return root;
         }
-        else if (path.getCharAt(0) == 'l') {
+        else if (path.charAt(0) == 'l') {
             return this.left.retrieve(path.substring(1));
         }
         else {
@@ -116,7 +117,9 @@ public class NumberTriangle {
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
-        // TODO define any variables that you want to use to store things
+        // define any variables that you want to use to store things
+        ArrayList<NumberTriangle> prevRow = new ArrayList<NumberTriangle>();
+        ArrayList<NumberTriangle> curRow = new ArrayList<NumberTriangle>();
 
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
@@ -128,7 +131,27 @@ public class NumberTriangle {
             // remove when done; this line is included so running starter code prints the contents of the file
             System.out.println(line);
 
-            // TODO process the line
+            // process the line
+            String[] numbers = line.split(" ");
+            for (int i = 0; i < numbers.length; i++) {
+                int num = Integer.parseInt(numbers[i]);
+                if (top == null) {
+                    top = new NumberTriangle(num);
+                    curRow.add(top);
+                } else {
+                    NumberTriangle t = new NumberTriangle(num);
+                    if (i < prevRow.size()) {
+                        prevRow.get(i).setLeft(t);
+                    }
+                    if (i > 0) {
+                        prevRow.get(i-1).setRight(t);
+                    }
+                    curRow.add(t);
+                }
+            }
+            prevRow = curRow;
+            curRow = new ArrayList<NumberTriangle>();
+
 
             //read the next line
             line = br.readLine();
